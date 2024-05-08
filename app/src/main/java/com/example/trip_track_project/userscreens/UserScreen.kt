@@ -52,7 +52,7 @@ import com.example.trip_track_project.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen() {
-    var text by remember { mutableIntStateOf(0)}
+    var text by remember { mutableIntStateOf(0) }
 
     Scaffold(
         topBar = {
@@ -147,12 +147,11 @@ fun UserScreen() {
                     .size(170.dp)
                     .padding(10.dp),
             ) {
-                Image(painter = painterResource(id = R.drawable.auto4), contentDescription = "Auto",
+                Image(
+                    painter = painterResource(id = R.drawable.auto4), contentDescription = "Auto",
                     modifier = Modifier
-                        .fillMaxSize())
-
-
-
+                        .fillMaxSize()
+                )
 
 
             }
@@ -162,10 +161,12 @@ fun UserScreen() {
                     .padding(10.dp)
                     .offset(x = 220.dp, y = (-185).dp),
             ) {
-                Image(painter = painterResource(id = R.drawable.car1), contentDescription = "Car",
+                Image(
+                    painter = painterResource(id = R.drawable.car1), contentDescription = "Car",
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.White))
+                        .background(Color.White)
+                )
 
 
             }
@@ -180,7 +181,10 @@ fun UserScreen() {
                         .offset(x = 10.dp, y = (-170).dp)
                         .padding(16.dp),
                 ) {
-
+                    Image(painter = painterResource(id = R.drawable.bus), contentDescription = "",
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
 
                 }
             }
