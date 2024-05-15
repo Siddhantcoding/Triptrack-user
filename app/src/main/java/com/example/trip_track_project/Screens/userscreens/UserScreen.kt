@@ -1,4 +1,4 @@
-package com.example.trip_track_project.userscreens
+package com.example.trip_track_project.Screens.userscreens
 
 
 import androidx.compose.foundation.Image
@@ -16,13 +16,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,14 +38,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trip_track_project.R
 
@@ -53,12 +53,11 @@ import com.example.trip_track_project.R
 @Composable
 fun UserScreen() {
     var text by remember { mutableIntStateOf(0) }
-
     Scaffold(
         topBar = {
             TopAppBar(colors = topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.onTertiary,
+                titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ), title = {
 
                 Text(
@@ -86,11 +85,11 @@ fun UserScreen() {
         },
         bottomBar = {
             BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.onTertiary,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
             ) {
                 Icon(
-                    imageVector = Icons.Default.Settings,
+                    imageVector = Icons.Default.MailOutline,
                     contentDescription = "Settings",
                     modifier = Modifier
                         .size(35.dp)
@@ -104,21 +103,21 @@ fun UserScreen() {
                         .offset(x = 210.dp)
                 )
                 Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = "search",
+                    imageVector = Icons.Filled.LocationOn,
+                    contentDescription = "location",
                     modifier = Modifier
                         .size(35.dp)
                         .offset(x = 100.dp)
                 )
                 Icon(
-                    imageVector = Icons.Default.Share,
+                    imageVector = Icons.Default.Favorite,
                     contentDescription = "add",
                     modifier = Modifier
                         .size(35.dp)
                         .offset(x = 0.dp)
                 )
                 Icon(
-                    imageVector = Icons.Default.Home,
+                    imageVector = Icons.Default.Person,
                     contentDescription = "home",
                     modifier = Modifier
                         .size(35.dp)
@@ -147,6 +146,7 @@ fun UserScreen() {
                     .size(170.dp)
                     .padding(10.dp),
             ) {
+                Text(text = "Auto / E - Rickshaw", style = TextStyle(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold))
                 Image(
                     painter = painterResource(id = R.drawable.auto4), contentDescription = "Auto",
                     modifier = Modifier
@@ -161,8 +161,9 @@ fun UserScreen() {
                     .padding(10.dp)
                     .offset(x = 220.dp, y = (-185).dp),
             ) {
+                Text(text = "Car", style = TextStyle(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold))
                 Image(
-                    painter = painterResource(id = R.drawable.car1), contentDescription = "Car",
+                    painter = painterResource(id = R.drawable.car2), contentDescription = "Car",
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.White)
@@ -181,6 +182,9 @@ fun UserScreen() {
                         .offset(x = 10.dp, y = (-170).dp)
                         .padding(16.dp),
                 ) {
+                    Text(text = "Bus", style = TextStyle(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        fontSize = 24.sp))
                     Image(painter = painterResource(id = R.drawable.bus), contentDescription = "",
                         modifier = Modifier
                             .fillMaxSize()

@@ -1,7 +1,7 @@
 package com.example.trip_track_project.Screens.Auth
 
 import android.util.Log
-import com.example.trip_track_project.Register.RegisterState
+import com.example.trip_track_project.Screens.Register.RegisterState
 import com.example.trip_track_project.Screens.Login.LoginState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth

@@ -1,6 +1,5 @@
 package com.example.trip_track_project.Screens.Login
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,17 +17,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.trip_track_project.R
 
 @Composable
 fun LoginScreen(
+    state: LoginState = LoginState(),
     onEvent: (LoginEvent) -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    gotoHome : () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -38,7 +37,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Image(painter = painterResource(id = R.drawable.triptrack2), contentDescription = "Logo")
+
         TextField(
             value = email,
             onValueChange = { email = it },
@@ -67,10 +66,4 @@ fun LoginScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun LoginScreenPreview() {
-    LoginScreen(onEvent = {}) {}
-
-}
 

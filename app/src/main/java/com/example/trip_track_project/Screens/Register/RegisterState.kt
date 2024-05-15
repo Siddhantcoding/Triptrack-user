@@ -1,4 +1,4 @@
-package com.example.trip_track_project.Register
+package com.example.trip_track_project.Screens.Register
 
 
 data class RegisterState(

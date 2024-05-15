@@ -26,14 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.trip_track_project.Register.RegisterEvent
-import com.example.trip_track_project.Register.RegisterState
+import com.example.trip_track_project.Screens.Register.RegisterEvent
+import com.example.trip_track_project.Screens.Register.RegisterState
 
 @Composable
 fun RegisterScreen(
     state: RegisterState = RegisterState(),
     onEvent: (RegisterEvent) -> Unit = {},
     onBack: () -> Unit = {},
+    gotoHome: () -> Unit,
 ) {
     if (state.isRegisterSuccess) {
         onBack()
