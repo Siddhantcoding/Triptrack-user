@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.trip_track_project" />
-                  <option name="mobileSdkAppId" value="1:79033120256:android:d34d79f179ed7e41df8ae5" />
-                  <option name="projectId" value="trip-track-project" />
-                  <option name="projectNumber" value="79033120256" />
+                  <option name="appId" value="com.project.trip_track_project" />
+                  <option name="mobileSdkAppId" value="1:117347827126:android:48684f86bfa1ad4fa41517" />
+                  <option name="projectId" value="trip-track-driver" />
+                  <option name="projectNumber" value="117347827126" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.trip_track_project"
+    namespace = "com.project.trip_track_project"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.trip_track_project"
+        applicationId = "com.project.trip_track_project"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -60,9 +60,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,4 +71,26 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.core.splashscreen)
+
+    implementation("com.mapbox.maps:android:11.3.1")
+    // navigation
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    // lifecycle
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
+    // coil
+    implementation("io.coil-kt:coil-compose:1.4.0")
+
+    implementation("com.mapbox.extension:maps-compose:11.3.0")
+    // mapbox
+
+    // accompanist
+    implementation ("com.google.accompanist:accompanist-permissions:0.24.13")
+    // okhttp
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    // mapbox java turf
+    implementation("com.mapbox.mapboxsdk:mapbox-sdk-turf:6.15.0")
+    // mapbox services
+    implementation("com.mapbox.mapboxsdk:mapbox-sdk-geojson:6.15.0")
+    implementation("com.mapbox.mapboxsdk:mapbox-sdk-core:6.15.0")
+    implementation("com.mapbox.mapboxsdk:mapbox-sdk-services:6.15.0")
 }

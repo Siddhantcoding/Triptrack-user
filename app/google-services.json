@@ -1,21 +1,40 @@
 {
   "project_info": {
-    "project_number": "79033120256",
-    "project_id": "trip-track-project",
-    "storage_bucket": "trip-track-project.appspot.com"
+    "project_number": "117347827126",
+    "project_id": "trip-track-driver",
+    "storage_bucket": "trip-track-driver.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:79033120256:android:d34d79f179ed7e41df8ae5",
+        "mobilesdk_app_id": "1:117347827126:android:5d5e64bde6b391b0a41517",
         "android_client_info": {
-          "package_name": "com.example.trip_track_project"
+          "package_name": "com.example.triptrackdriver"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAw4CBgL24PI-g8Tw2kqhF7AxhM85lFev4"
+          "current_key": "AIzaSyA3hBQZHAZv7JqspiOwYK3v-wpc_lqLLYw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117347827126:android:48684f86bfa1ad4fa41517",
+        "android_client_info": {
+          "package_name": "com.project.trip_track_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3hBQZHAZv7JqspiOwYK3v-wpc_lqLLYw"
         }
       ],
       "services": {
