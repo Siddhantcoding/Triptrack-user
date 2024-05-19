@@ -71,7 +71,9 @@ fun UserScreen(
                     text = "TripTrack",
                 )
                 }, actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        onEvent(UserScreenEvent.onLogoutSelected)
+                    }) {
                         Icon(Icons.Default.AccountCircle, contentDescription = "")
                     }
             })
@@ -83,7 +85,7 @@ fun UserScreen(
                 .padding(innerPadding)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.login_bg),
+                painter = painterResource(id = R.drawable.mobile_abstract_bg),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = androidx.compose.ui.layout.ContentScale.Crop
@@ -106,7 +108,9 @@ fun UserScreen(
                         modifier = Modifier
                             .height(180.dp)
                             .weight(1f)
-                            .clickable { }
+                            .clickable {
+                                onEvent(UserScreenEvent.onProfileSelected)
+                            }
                             .background(
                                 Brush.verticalGradient(
                                     listOf(
@@ -129,7 +133,8 @@ fun UserScreen(
                         modifier = Modifier
                             .height(180.dp)
                             .weight(1f)
-                            .clickable { }
+                            .clickable {
+                                 onEvent(UserScreenEvent.onLocationSelected)                            }
                             .background(
                                 Brush.verticalGradient(
                                     listOf(
@@ -157,7 +162,9 @@ fun UserScreen(
                         modifier = Modifier
                             .height(180.dp)
                             .weight(1f)
-                            .clickable { }
+                            .clickable {
+                                onEvent(UserScreenEvent.onTaxiSelected)
+                            }
                             .background(
                                 Brush.verticalGradient(
                                     listOf(
@@ -180,7 +187,9 @@ fun UserScreen(
                         modifier = Modifier
                             .height(180.dp)
                             .weight(1f)
-                            .clickable { }
+                            .clickable {
+                                onEvent(UserScreenEvent.onRickshawSelected)
+                            }
                             .background(
                                 Brush.verticalGradient(
                                     listOf(
@@ -209,7 +218,9 @@ fun UserScreen(
                         modifier = Modifier
                             .height(180.dp)
                             .weight(1f)
-                            .clickable { }
+                            .clickable {
+                                onEvent(UserScreenEvent.onBusSelected)
+                            }
                             .background(
                                 Brush.verticalGradient(
                                     listOf(

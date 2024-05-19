@@ -84,7 +84,7 @@ dependencies {
     // mapbox
 
     // accompanist
-    implementation ("com.google.accompanist:accompanist-permissions:0.24.13")
+    implementation ("com.google.accompanist:accompanist-permissions:0.28.0")
     // okhttp
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     // mapbox java turf

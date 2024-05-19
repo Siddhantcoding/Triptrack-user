@@ -2,15 +2,13 @@ package com.project.trip_track_project.screens.location
 
 import android.R
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,22 +23,18 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.DefaultSettingsProvider
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.viewport.ViewportStatus
@@ -49,32 +43,26 @@ import com.project.trip_track_project.utils.RequestLocationPermission
 import kotlinx.coroutines.launch
 
 
-@OptIn(MapboxExperimental::class)
+@OptIn(MapboxExperimental::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LocationScreen(
     modifier: Modifier = Modifier,
-    onClickNavigate: () -> Unit = {},
+    state: LocationState,
+    onEvent: (LocationEvent) -> Unit = {},
 ) {
 
-    val ZOOM: Double = 0.0
-    val PITCH: Double = 0.0
     val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
+    val zoom: Double = 0.0
+    val pitch: Double = 0.0
+
+    val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    var permissionRequestCount by remember {
-        mutableStateOf(1)
-    }
-    var showMap by remember {
-        mutableStateOf(false)
-    }
-    var showRequestPermissionButton by remember {
-        mutableStateOf(false)
-    }
+
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
-            center(CityLocations.HELSINKI)
-            zoom(ZOOM)
-            pitch(PITCH)
+            center(CityLocations.LUCKNOW)
+            zoom(zoom)
+            pitch(pitch)
         }
     }
 
@@ -83,9 +71,7 @@ fun LocationScreen(
             // Show locate button when viewport is in Idle state, e.g. camera is controlled by gestures.
             if (mapViewportState.mapViewportStatus == ViewportStatus.Idle) {
                 FloatingActionButton(
-                    onClick = {
-                        mapViewportState.transitionToFollowPuckState()
-                    }
+                    onClick = { mapViewportState.transitionToFollowPuckState() }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_menu_mylocation),
@@ -95,61 +81,30 @@ fun LocationScreen(
             }
         },
         snackbarHost = {
-            SnackbarHost(snackbarHostState)
-        },
-        bottomBar = {
-            // Show bottom bar with some information
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    modifier = Modifier.padding(4.dp)
-                ) {
-                    Text("Latitude: ${mapViewportState.cameraState.center.latitude()}")
-                    Text("Longitude: ${mapViewportState.cameraState.center.longitude()}")
-                    Text("Zoom: ${mapViewportState.cameraState.zoom}")
-                    Text("Pitch: ${mapViewportState.cameraState.pitch}")
-                    Text("Bearing: ${mapViewportState.cameraState.bearing}")
-                    SendLocationDetailToFirebase(
-                        LocalContext.current,
-                        mapViewportState.cameraState.center.latitude(),
-                        mapViewportState.cameraState.center.longitude()
-                    )
+            SnackbarHost(snackBarHostState)
 
-                }
-                FloatingActionButton(onClick = { onClickNavigate() }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_dialog_map),
-                        contentDescription = "Navigate"
-                    )
-                }
-            }
-        }
+        },
+        bottomBar = {}
     ) {
         Column(
             modifier = Modifier.padding(it)
         ) {
             RequestLocationPermission(
-                requestCount = permissionRequestCount,
+                requestCount = state.permissionRequestState,
                 onPermissionDenied = {
                     scope.launch {
-                        snackbarHostState.showSnackbar("You need to accept location permissions.")
+                        snackBarHostState.showSnackbar("You need to accept location permissions.")
                     }
-                    showRequestPermissionButton = true
+                    onEvent(LocationEvent.showRequestPermissionButton(true))
                 },
                 onPermissionReady = {
-                    showRequestPermissionButton = false
-                    showMap = true
+                    onEvent(LocationEvent.showRequestPermissionButton(false))
+                    onEvent(LocationEvent.showMap(true))
                 }
             )
-            if (showMap) {
+            if (state.showMap) {
                 MapboxMap(
-                    Modifier
-                        .fillMaxSize(),
+                    Modifier.fillMaxSize(),
                     mapViewportState = mapViewportState,
                     locationComponentSettings = DefaultSettingsProvider.defaultLocationComponentSettings(
                         LocalDensity.current.density
@@ -158,24 +113,37 @@ fun LocationScreen(
                         .setPuckBearingEnabled(true)
                         .setPuckBearing(PuckBearing.HEADING)
                         .setEnabled(true)
-                        .build()
+                        .build(),
                 ) {
                     LaunchedEffect(Unit) {
                         mapViewportState.transitionToFollowPuckState()
                     }
+                    state.driverList.forEach { driver ->
+                        CircleAnnotation(
+                            point = com.mapbox.geojson.Point.fromLngLat(
+                                driver.longitude,
+                                driver.latitude
+                            ),
+                            circleRadius = 20.0,
+                            circleColorInt = Color.BLUE,
+                            onClick = {
+                                true
+                            }
+                        )
+                    }
                 }
 
             }
-            if (showRequestPermissionButton) {
+            if (state.showRequestPermissionButton) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(modifier = Modifier.align(Alignment.Center)) {
                         Button(
                             modifier = Modifier.align(Alignment.CenterHorizontally),
                             onClick = {
-                                permissionRequestCount += 1
+                                onEvent(LocationEvent.OnPermissionRequest(state.permissionRequestState + 1))
                             }
                         ) {
-                            Text("Request permission again ($permissionRequestCount)")
+                            Text("Request permission again (${state.permissionRequestState})")
                         }
                         Button(
                             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -192,10 +160,10 @@ fun LocationScreen(
                     }
                 }
             }
-
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -226,10 +194,19 @@ fun MapScaffold(
         bottomBar = bottomBar,
         content = content,
         snackbarHost = snackbarHost
-
     )
 }
 
+
+//@Preview
+//@Composable
+//private fun LocationScreenPreview() {
+//    Trip_Track_ProjectTheme {
+//        LocationScreen(
+//            onClickNavigate = {},
+//        )
+//    }
+//}
 
 
 

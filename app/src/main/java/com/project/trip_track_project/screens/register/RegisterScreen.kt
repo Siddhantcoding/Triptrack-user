@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,16 +27,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.trip_track_project.screens.register.RegisterEvent
 import com.project.trip_track_project.screens.register.RegisterState
+import com.project.trip_track_project.ui.theme.Trip_Track_ProjectTheme
 
 @Composable
 fun RegisterScreen(
     state: RegisterState = RegisterState(),
     onEvent: (RegisterEvent) -> Unit = {},
     onBack: () -> Unit = {},
-    gotoHome: () -> Unit,
+    gotoHome: () -> Unit = {}
 ) {
     if (state.isRegisterSuccess) {
         gotoHome()
@@ -67,7 +71,7 @@ fun RegisterScreen(
             Text(text = "Create free account", style = MaterialTheme.typography.headlineMedium)
             AnimatedVisibility(visible = state.error.isNotBlank()) {
                 Card(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.extraLarge,
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -91,47 +95,57 @@ fun RegisterScreen(
                     }
                 }
             }
-            OutlinedTextField(
-                value = state.email,
-                onValueChange = { onEvent(RegisterEvent.SetEmail(it)) },
-                placeholder = { Text("Email") },
-                leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = null) }
-            )
-            //
-            OutlinedTextField(
-                value = state.username,
-                onValueChange = { onEvent(RegisterEvent.SetUsername(it)) },
-                placeholder = { Text("Username") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null
-                    )
+            if(state.isLoading){
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
                 }
-            )
-            OutlinedTextField(
-                value = state.password,
-                onValueChange = { onEvent(RegisterEvent.SetPassword(it)) },
-                placeholder = { Text("Password") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = null
-                    )
-                },
-
+            }else{
+                OutlinedTextField(
+                    value = state.email,
+                    onValueChange = { onEvent(RegisterEvent.SetEmail(it)) },
+                    placeholder = { Text("Email") },
+                    leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = null) }
                 )
-            OutlinedTextField(
-                value = state.confirmPassword,
-                onValueChange = { onEvent(RegisterEvent.SetConfirmPassword(it)) },
-                placeholder = { Text("Confirm Password") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = null
+                //
+                OutlinedTextField(
+                    value = state.username,
+                    onValueChange = { onEvent(RegisterEvent.SetUsername(it)) },
+                    placeholder = { Text("Username") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null
+                        )
+                    }
+                )
+                OutlinedTextField(
+                    value = state.password,
+                    onValueChange = { onEvent(RegisterEvent.SetPassword(it)) },
+                    placeholder = { Text("Password") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = null
+                        )
+                    },
+
                     )
-                }
-            )
+                OutlinedTextField(
+                    value = state.confirmPassword,
+                    onValueChange = { onEvent(RegisterEvent.SetConfirmPassword(it)) },
+                    placeholder = { Text("Confirm Password") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = null
+                        )
+                    }
+                )
+            }
             Row {
                 Button(
                     onClick = { onEvent(RegisterEvent.OnSaveUser) },
@@ -146,5 +160,24 @@ fun RegisterScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun RegisterPreview() {
+    Trip_Track_ProjectTheme {
+
+        RegisterScreen(
+            state = RegisterState(
+                email = "xaidmeta@gmail.com",
+                username = "xaidmeta",
+                password = "123456",
+                confirmPassword = "",
+                error = "error message",
+                isLoading = true,
+                isRegisterSuccess = false
+            )
+        )
     }
 }

@@ -42,7 +42,7 @@ fun LoginScreen(
     }
     Box {
         Image(
-            painter = painterResource(id = R.drawable.login_bg),
+            painter = painterResource(id = R.drawable.mobile_abstract_bg),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
