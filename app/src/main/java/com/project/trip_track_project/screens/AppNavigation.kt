@@ -18,6 +18,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project.trip_track_project.AuthActivity
+import com.project.trip_track_project.models.VehicleChoices
+import com.project.trip_track_project.screens.Vehicle.VehicleScreen
+import com.project.trip_track_project.screens.Vehicle.VehicleViewModel
 import com.project.trip_track_project.screens.location.LocationScreen
 import com.project.trip_track_project.screens.location.LocationViewModel
 import com.project.trip_track_project.screens.profile.ProfileScreen
@@ -96,13 +99,34 @@ fun AppNavigation() {
             )
         }
         composable(MainScreen.FindTaxi.route) {
-            //TaxiScreen()
+            val vehicleVM: VehicleViewModel = viewModel(
+                factory = VehicleViewModel.Factory(VehicleChoices.TAXI)
+            )
+            VehicleScreen(
+                modifier = Modifier,
+                state = vehicleVM.state.collectAsState().value,
+                onEvent = vehicleVM::onEvent
+            )
         }
         composable(MainScreen.FindRickshaw.route) {
-            //RickshawScreen()
+            val vehicleVM: VehicleViewModel = viewModel(
+                factory = VehicleViewModel.Factory(VehicleChoices.E_RICKSHAW)
+            )
+            VehicleScreen(
+                modifier = Modifier,
+                state = vehicleVM.state.collectAsState().value,
+                onEvent = vehicleVM::onEvent
+            )
         }
         composable(MainScreen.FindBus.route) {
-            //BusScreen()
+            val vehicleVM: VehicleViewModel = viewModel(
+                factory = VehicleViewModel.Factory(VehicleChoices.BUS)
+            )
+            VehicleScreen(
+                modifier = Modifier,
+                state = vehicleVM.state.collectAsState().value,
+                onEvent = vehicleVM::onEvent
+            )
         }
 
     }

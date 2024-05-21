@@ -94,7 +94,12 @@ fun LocationScreen(
             SnackbarHost(snackBarHostState)
 
         },
-        bottomBar = {}
+        bottomBar = {
+            onEvent(LocationEvent.OnLocationUpdate(
+                mapViewportState.cameraState.center.latitude(),
+                mapViewportState.cameraState.center.longitude()
+            ))
+        }
     ) {
         Column(
             modifier = Modifier.padding(it)
