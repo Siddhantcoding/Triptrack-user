@@ -2,6 +2,7 @@ package com.project.trip_track_project.screens.location
 
 import android.R
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -9,18 +10,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -30,14 +35,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.DefaultSettingsProvider
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.viewport.ViewportStatus
+import com.project.trip_track_project.models.VehicleChoices
 import com.project.trip_track_project.utils.CityLocations
 import com.project.trip_track_project.utils.RequestLocationPermission
 import kotlinx.coroutines.launch
@@ -56,6 +65,7 @@ fun LocationScreen(
     val pitch: Double = 0.0
 
     val snackBarHostState = remember { SnackbarHostState() }
+    val driverSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     val scope = rememberCoroutineScope()
 
     val mapViewportState = rememberMapViewportState {
@@ -95,11 +105,11 @@ fun LocationScreen(
                     scope.launch {
                         snackBarHostState.showSnackbar("You need to accept location permissions.")
                     }
-                    onEvent(LocationEvent.showRequestPermissionButton(true))
+                    onEvent(LocationEvent.ShowRequestPermissionButton(true))
                 },
                 onPermissionReady = {
-                    onEvent(LocationEvent.showRequestPermissionButton(false))
-                    onEvent(LocationEvent.showMap(true))
+                    onEvent(LocationEvent.ShowRequestPermissionButton(false))
+                    onEvent(LocationEvent.ShowMap(true))
                 }
             )
             if (state.showMap) {
@@ -119,20 +129,44 @@ fun LocationScreen(
                         mapViewportState.transitionToFollowPuckState()
                     }
                     state.driverList.forEach { driver ->
-                        CircleAnnotation(
-                            point = com.mapbox.geojson.Point.fromLngLat(
+                        PointAnnotation(
+                            point = Point.fromLngLat(
                                 driver.longitude,
                                 driver.latitude
                             ),
-                            circleRadius = 20.0,
-                            circleColorInt = Color.BLUE,
+                            iconImageBitmap = when (driver.vehicleType) {
+                                VehicleChoices.E_RICKSHAW.toString() -> BitmapFactory.decodeResource(
+                                    context.resources,
+                                    com.project.trip_track_project.R.drawable.ecar
+                                )
+
+                                VehicleChoices.BUS.toString() -> BitmapFactory.decodeResource(
+                                    context.resources,
+                                    com.project.trip_track_project.R.drawable.ic_bus
+                                )
+
+                                else -> {
+                                    BitmapFactory.decodeResource(
+                                        context.resources,
+                                        com.project.trip_track_project.R.drawable.ic_car
+                                    )
+                                }
+                            },
+                            iconSize = 1.2,
                             onClick = {
+                                onEvent(LocationEvent.OnDriverSelected(driver))
                                 true
                             }
                         )
+                        CircleAnnotation(
+                            point = Point.fromLngLat(driver.longitude, driver.latitude),
+                            circleColorInt = Color.argb(50, 100, 100, 100),
+                            circleRadius = 5.0,
+                            circleStrokeWidth = 1.0,
+                            circleStrokeColorInt = Color.argb(255, 100, 100, 100)
+                        )
                     }
                 }
-
             }
             if (state.showRequestPermissionButton) {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -159,6 +193,41 @@ fun LocationScreen(
                         }
                     }
                 }
+            }
+            if (state.showDriverBottomSheet) {
+                DriverBottomSheet(
+                    state = state,
+                    onEvent = onEvent,
+                    sheetState = driverSheetState
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DriverBottomSheet(
+    state: LocationState,
+    onEvent: (LocationEvent) -> Unit,
+    sheetState: SheetState,
+) {
+    ModalBottomSheet(
+        onDismissRequest = {
+            onEvent(LocationEvent.OnDriverUnSelected)
+        },
+        sheetState = sheetState
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp).height(400.dp)
+        ) {
+            Text("Driver: ${state.selectedDriver.name}")
+            Text("Vehicle: ${state.selectedDriver.vehicleType}")
+            Text("Phone: ${state.selectedDriver.phoneNumber}")
+            Button(onClick = {
+                onEvent(LocationEvent.OnDriverUnSelected)
+            }) {
+                Text("Close")
             }
         }
     }

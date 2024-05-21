@@ -32,26 +32,29 @@ data class LocationState(
     val userAddress: String = "",
     val currentLocation: String = "",
     val loadingStatus: LoadingStatus = LoadingStatus.LOADING,
-    val permissionRequestState:Int = 1,
+    val permissionRequestState: Int = 1,
     val showMap: Boolean = false,
     val showRequestPermissionButton: Boolean = false,
     val lastLocUpdate: Long = 1000,
+    val showDriverBottomSheet: Boolean = false,
 )
 
 sealed class LocationEvent {
     data class OnDriverSelected(val driver: Driver) : LocationEvent()
+    data object OnDriverUnSelected: LocationEvent()
     data class OnPermissionRequest(val permissionRequestState: Int) : LocationEvent()
-    data class showMap(val showMap: Boolean) : LocationEvent()
+    data class ShowMap(val showMap: Boolean) : LocationEvent()
     data class OnLocationUpdate(val latitude: Double, val longitude: Double) : LocationEvent()
-    data class showRequestPermissionButton(val showRequestPermissionButton: Boolean) : LocationEvent()
+    data class ShowRequestPermissionButton(val showRequestPermissionButton: Boolean) :
+        LocationEvent()
 }
 
 @Suppress("DEPRECATION")
 class LocationViewModel(
-    val geocoder: Geocoder,
-    val db: FirebaseFirestore = Firebase.firestore,
+    private val geocoder: Geocoder,
+    private val db: FirebaseFirestore = Firebase.firestore,
     val auth: FirebaseAuth = Firebase.auth,
-):ViewModel() {
+) : ViewModel() {
     private val _state = MutableStateFlow(LocationState())
     val state: StateFlow<LocationState> = _state.asStateFlow()
 
@@ -114,6 +117,40 @@ class LocationViewModel(
 
             } else {
                 Log.d("LocationViewModel", "No address found")
+            }
+        }
+    }
+
+    fun onEvent(event: LocationEvent) {
+        when (event) {
+            is LocationEvent.OnDriverSelected -> {
+                _state.update {
+                    it.copy(
+                        selectedDriver = event.driver,
+                        showDriverBottomSheet = true
+                    )
+                }
+            }
+
+            is LocationEvent.OnPermissionRequest -> {
+                _state.update { it.copy(permissionRequestState = event.permissionRequestState) }
+            }
+
+            is LocationEvent.ShowMap -> {
+                _state.update { it.copy(showMap = event.showMap) }
+            }
+
+            is LocationEvent.OnLocationUpdate -> {
+                _state.update { it.copy(latitude = event.latitude, longitude = event.longitude) }
+                updateUserLocation(event.latitude, event.longitude)
+            }
+
+            is LocationEvent.ShowRequestPermissionButton -> {
+                _state.update { it.copy(showRequestPermissionButton = event.showRequestPermissionButton) }
+            }
+
+            is LocationEvent.OnDriverUnSelected -> {
+                _state.update { it.copy(showDriverBottomSheet = false, selectedDriver = Driver()) }
             }
         }
     }

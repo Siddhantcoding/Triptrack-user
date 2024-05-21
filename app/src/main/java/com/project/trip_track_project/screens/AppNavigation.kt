@@ -84,6 +84,7 @@ fun AppNavigation() {
             val locationVM: LocationViewModel = viewModel(factory = LocationViewModel.Factory(geocoder))
             LocationScreen(
                 state = locationVM.state.collectAsState().value,
+                onEvent = locationVM::onEvent
             )
         }
         composable(MainScreen.Profile.route) {
